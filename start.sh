@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eux
 
-Precompiles all assets into static files in production mode
-if [ $RAILS_ENV == "production" ]; then
+# Precompiles all assets into static files in production mode
+if [ "$RAILS_ENV" == "production" ]; then
   bundle exec rake assets:precompile;
 fi
 

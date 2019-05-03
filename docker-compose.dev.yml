@@ -1,0 +1,32 @@
+version: '3.6'
+x-volumes:
+  &default-volumes
+  - bundle_cache:/bundle
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - dev.env
+    command: /start.sh
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    volumes: *default-volumes
+
+  db:
+    image: postgres:11.2
+    environment:
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=demo_app
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/11.2/data
+
+volumes:
+  bundle_cache:
+  pgdata:
