@@ -1,33 +1,32 @@
+# frozen_string_literal: true
+
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+VM_BOX = 'generic/ubuntu1804'
+VM_NETWORK = '10.0.0.'
+
 Vagrant.configure('2') do |config|
-  config.vm.define 'web', primary: true do |web|
-    web.vm.box = 'ubuntu/disco64'
-    web.vm.hostname = 'rails-dev'
+  config.vm.define 'docker', primary: true do |docker|
+    docker.vm.box = VM_BOX
+    docker.vm.hostname = 'rails-dev'
 
-    web.vm.network :private_network, ip: '10.0.0.10'
-    config.vm.network 'forwarded_port', guest: 80, host: 3000
+    docker.vm.network :private_network, ip: "#{VM_NETWORK}10"
+    docker.vm.network 'forwarded_port', guest: 22, host: 2222
+    docker.vm.network 'forwarded_port', guest: 80, host: 3000
 
-    web.vm.provider 'virtualbox' do |v|
-      v.memory = 2048
-      v.cpus   = 2
-    end
+    public_key = File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")
+    script = <<SCRIPT
+      echo "#{public_key}" >> /home/vagrant/.ssh/authorized_keys
+SCRIPT
+    docker.vm.provision :shell, inline: script
   end
 
-  config.vm.define 'postgres' do |db|
-    db.vm.box = 'ubuntu/disco64'
+  config.vm.define 'db' do |db|
+    db.vm.box = VM_BOX
     db.vm.hostname = 'postgres'
 
-    db.vm.network :private_network, ip: '10.0.0.11'
-
-    db.vm.provider 'virtualbox' do |v|
-      v.memory = 2048
-      v.cpus   = 2
-    end
+    db.vm.network :private_network, ip: "#{VM_NETWORK}11"
+    db.vm.network 'forwarded_port', guest: 22, host: 2222
   end
-
-  config.vm.provision 'shell', inline: <<-SHELL
-    apt-get update
-  SHELL
 end
