@@ -27,6 +27,12 @@ SCRIPT
     db.vm.hostname = 'postgres'
 
     db.vm.network :private_network, ip: "#{VM_NETWORK}11"
-    db.vm.network 'forwarded_port', guest: 22, host: 2222
+    db.vm.network 'forwarded_port', guest: 22, host: 2022
+
+    public_key = File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")
+    script = <<SCRIPT
+      echo "#{public_key}" >> /home/vagrant/.ssh/authorized_keys
+SCRIPT
+    db.vm.provision :shell, inline: script
   end
 end

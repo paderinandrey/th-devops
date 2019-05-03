@@ -1,0 +1,8 @@
+---
+- name: Production DB
+  hosts: database
+  become: yes
+  remote_user: deplo
+  gather_facts: True
+  roles:
+    - { role: geerlingguy.postgresql, tags: ['postgres'] }

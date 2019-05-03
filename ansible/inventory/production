@@ -1,4 +1,8 @@
 docker ansible_ssh_host=localhost ansible_ssh_port=2222 ansible_ssh_user=vagrant
+db ansible_ssh_host=localhost ansible_ssh_port=2022 ansible_ssh_user=vagrant
 
 [production]
 docker
+
+[database]
+db

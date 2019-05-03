@@ -5,11 +5,7 @@
   remote_user: ubuntu
   gather_facts: False
   tasks:
-    - name: Update and upgrade apt packages
-      apt:
-        upgrade: yes
-        update_cache: yes
-        cache_valid_time: 86400
+    - name: Update apt packages
+      raw: apt-get update
     - name: Install python
-      apt:
-        name: python
+      raw: apt-get install python -y
