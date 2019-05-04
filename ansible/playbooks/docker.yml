@@ -1,0 +1,11 @@
+---
+- name: App
+  hosts: docker
+  become: yes
+  remote_user: deplo
+  gather_facts: True
+  roles:
+    - { role: geerlingguy.docker, tags: ['docker'] }
+    - { role: common, tags: ['common'] }
+    - { role: app, tags: ['app'] }
+

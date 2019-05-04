@@ -1,0 +1,15 @@
+---
+project_name: demo_app
+app_source: "https://github.com/Mehonoshin/sample_rails_app.git"
+db_host: '10.0.0.11'
+
+postgresql_locales:
+  - 'en_US.UTF-8'
+
+postgresql_hba_entries:
+  - {type: local, database: all, user: postgres, auth_method: peer}
+  - {type: local, database: all, user: all, auth_method: peer}
+  - {type: host, database: all, user: all, address: '127.0.0.1/32', auth_method: md5}
+  - {type: host, database: all, user: all, address: '::1/128', auth_method: md5}
+  - {type: host, database: all, user: all, address: '10.0.0.0/24', auth_method: md5}
+

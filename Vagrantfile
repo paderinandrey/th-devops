@@ -14,12 +14,6 @@ Vagrant.configure('2') do |config|
     docker.vm.network :private_network, ip: "#{VM_NETWORK}10"
     docker.vm.network 'forwarded_port', guest: 22, host: 2222
     docker.vm.network 'forwarded_port', guest: 80, host: 3000
-
-    public_key = File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")
-    script = <<SCRIPT
-      echo "#{public_key}" >> /home/vagrant/.ssh/authorized_keys
-SCRIPT
-    docker.vm.provision :shell, inline: script
   end
 
   config.vm.define 'db' do |db|
@@ -28,11 +22,12 @@ SCRIPT
 
     db.vm.network :private_network, ip: "#{VM_NETWORK}11"
     db.vm.network 'forwarded_port', guest: 22, host: 2022
-
-    public_key = File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")
-    script = <<SCRIPT
-      echo "#{public_key}" >> /home/vagrant/.ssh/authorized_keys
-SCRIPT
-    db.vm.provision :shell, inline: script
+    db.vm.network 'forwarded_port', guest: 5432, host: 5431
   end
+
+  public_key = File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")
+  script = <<SCRIPT
+    echo "#{public_key}" >> /home/vagrant/.ssh/authorized_keys
+SCRIPT
+  config.vm.provision :shell, inline: script
 end
