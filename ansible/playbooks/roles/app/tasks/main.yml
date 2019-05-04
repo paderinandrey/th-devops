@@ -1,0 +1,37 @@
+- name: Install packages
+  apt: name={{ item }} update_cache=yes state=latest
+  with_items:
+    - mc
+    - ncdu
+    - htop
+    - vim
+    - python-setuptools
+    - python-pip
+  become: true
+
+- name: Install docker-py package
+  pip: name=docker
+
+- name: install docker-compose package
+  pip: name=docker-compose
+
+- name: Clone app
+  git:
+    repo: "{{ app_source }}"
+    dest: /{{ project_name }}
+    force: yes
+  become: true
+
+- name: Build image
+  docker_image:
+    path: /{{ project_name }}
+    name: "{{ project_name }}"
+    state: build
+
+- name: Running the container
+  docker_container:
+    name: "{{ project_name }}"
+    image: "{{ project_name }}:latest"
+    state: started
+  environment:
+    DB_HOST: "{{ db_host }}"
